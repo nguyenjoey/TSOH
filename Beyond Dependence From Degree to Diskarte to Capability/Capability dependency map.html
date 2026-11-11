@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Capability dependency map</title>
+<style>
+:root{--bg:#fbfaf7;--sf:#f1efe8;--tx:#1f1e1b;--t2:#5f5e5a;--mu:#888780;--bd:#d3d1c7;--bs:#b4b2a9;--ac:#185fa5;--fb:#e6f1fb;--ab:#e1f5ee;--at:#085041;--vb:#eeedfe;--vt:#3c3489;--cp:#ba7517;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1c1c1a;--sf:#2c2c2a;--tx:#f1efe8;--t2:#b4b2a9;--mu:#888780;--bd:#444441;--bs:#5f5e5a;--ac:#85b7eb;--fb:#16283a;--ab:#085041;--at:#9fe1cb;--vb:#3c3489;--vt:#cecbf6;--cp:#ef9f27;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#1c1c1a;--sf:#2c2c2a;--tx:#f1efe8;--t2:#b4b2a9;--mu:#888780;--bd:#444441;--bs:#5f5e5a;--ac:#85b7eb;--fb:#16283a;--ab:#085041;--at:#9fe1cb;--vb:#3c3489;--vt:#cecbf6;--cp:#ef9f27;color-scheme:dark}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+main{max-width:760px;margin:0 auto;padding:24px 16px 40px}
+h1{font-size:22px;font-weight:500;margin:0 0 6px}
+h2{font-size:17px;font-weight:500;margin:28px 0 8px}
+.s{color:var(--t2);margin:0 0 16px}
+.ctl{display:flex;flex-wrap:wrap;gap:8px 20px;font-size:14px;color:var(--t2);margin:0 0 12px}
+.ctl label{display:flex;align-items:center;gap:6px;cursor:pointer}
+#m{overflow-x:auto}
+.dsm{border-collapse:separate;border-spacing:2px;font-size:12px;width:100%;table-layout:fixed;min-width:640px}
+.dsm th,.dsm td{padding:0;height:28px;text-align:center;font-weight:400}
+.dsm .rl{text-align:left;padding:0 8px;cursor:pointer;border-radius:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;background:var(--sf);color:var(--tx)}
+.dsm .ch{cursor:pointer;border-radius:6px;background:var(--sf);color:var(--t2)}
+.dsm .t2{background:var(--ab);color:var(--at)}
+.dsm .t3{background:var(--vb);color:var(--vt)}
+.dsm .c{border-radius:4px;background:var(--sf)}
+.dsm .c.up{background:var(--fb)}
+.dsm .c.dg{background:var(--bs)}
+.dsm .c.mk{cursor:pointer}
+.dsm .n{color:var(--mu)}
+.dsm .hl{box-shadow:inset 0 0 0 1.5px var(--ac)}
+.dsm .cp{outline:2px solid var(--cp);outline-offset:-2px}
+.dot{display:inline-block;width:14px;height:14px;border-radius:50%;box-sizing:border-box;vertical-align:middle}
+.dot.h{background:var(--tx)}
+.dot.s{border:1.5px solid var(--t2)}
+.dot.fb.h{background:var(--ac)}
+.dot.fb.s{border-color:var(--ac)}
+.dot.off{opacity:.2}
+.cpk{display:inline-block;width:14px;height:14px;border-radius:3px;outline:2px solid var(--cp);outline-offset:-2px;vertical-align:middle}
+.lg{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12px;color:var(--t2);margin:8px 0 12px}
+#p{background:var(--sf);border-radius:8px;padding:12px 16px;font-size:14px;line-height:1.5;min-height:64px}
+ul{padding-left:20px;margin:0}
+li{margin:0 0 6px}
+.nt{color:var(--t2);font-size:13px;margin:16px 0 0}
+</style>
+</head>
+<body>
+<main>
+<h1>Capability dependency map</h1>
+<p class="s">Twelve components regrouped from Karl Garcia’s “Beyond Dependence” article. Each row depends on the columns marked. Select a component or a mark to see how the dependency works.</p>
+<div class="ctl">
+<label><input type="checkbox" id="hd"> Hard dependencies only</label>
+<label><input type="checkbox" id="cp"> Highlight critical path</label>
+</div>
+<div id="m"></div>
+<div class="lg">
+<span>Row depends on column</span>
+<span><span class="dot h"></span> hard</span>
+<span><span class="dot s"></span> soft</span>
+<span><span class="dot h fb"></span> feedback, above the diagonal</span>
+<span><span class="cpk"></span> critical path</span>
+<span>Teal rows: buyers</span>
+<span>Purple rows: skills and knowledge</span>
+</div>
+<div id="p"></div>
+<h2>Key readings</h2>
+<ul>
+<li>Load-bearing: money and land rules support seven other components, verification six, industrial clusters six, and learning five.</li>
+<li>One hard loop: clusters need trained workers, and training needs anchor employers. Every other hard dependency runs one way, from rules to backbone to buyers to payoffs.</li>
+<li>Critical path: political continuity → verification → money and land rules → power and water → industrial clusters → learning → shared gains.</li>
+<li>Maritime repair, research, shared gains and resilience have no hard dependents, so each needs an explicit owner and measure.</li>
+</ul>
+<p class="nt">Of the 51 dependencies, 27 are hard (the dependent can’t work at scale without the supplier) and 24 are soft. The links and their labels are one analyst’s judgment from public evidence, not measured data. Draft, 10 November 2026.</p>
+</main>
+<script>
+var N=["Political continuity","Verification, procurement","Money and land rules","Power and water","Transport, maintenance","Industrial clusters","Farm value chains","Maritime, defense repair","Learning, apprenticeship","Research, diaspora","Shared gains","Resilience, options"];
+var F=["Political continuity","Verification and procurement integrity","Money and land rules","Power and water","Transport, logistics and maintenance","Industrial clusters","Farm value chains","Maritime and defense repair","Foundational learning and apprenticeships","Research and diaspora links","Shared gains","Resilience and options"];
+var Ly=[0,0,0,1,1,2,2,2,3,3,4,4];
+var CP={"1_0":1,"2_1":1,"3_2":1,"5_3":1,"8_5":1,"10_8":1};
+var E=[
+[0,10,"s","Broad gains build a constituency that defends reforms across administrations."],
+[1,0,"h","Continuity keeps verifiers independent and funded across administrations."],
+[2,0,"h","Multi-year budget windows and land-use rules need continuity."],
+[2,1,"h","Verification stops leakage, so budget lines turn into working assets."],
+[2,10,"s","Wider gains broaden the tax base and fiscal room."],
+[3,0,"s","Stable permitting and tariff rules draw long-term investment."],
+[3,1,"h","Independent checks keep grid and water projects real and maintained."],
+[3,2,"h","Needs multi-year financing and right-of-way rules."],
+[3,11,"s","Hardening and redundancy protect the grid and water systems from shocks."],
+[4,1,"h","Maintenance contracts only count if someone inspects the work."],
+[4,2,"h","Needs lifecycle budgets and right-of-way and land-use rules."],
+[4,11,"s","Resilient design keeps roads and ports open after typhoons."],
+[5,0,"h","Investors commit only if incentive rules survive administrations."],
+[5,1,"h","Performance conditions on incentives are enforceable only if results are verified."],
+[5,3,"h","Power cost and reliability set factory margins."],
+[5,4,"h","Ports and logistics connect suppliers to buyers."],
+[5,6,"s","Farm output feeds agro-processing."],
+[5,8,"h","Skilled workers let clusters scale and upgrade."],
+[5,9,"s","Research and diaspora links upgrade products and processes."],
+[6,2,"s","Land-use rules protect farmland and site storage and processing."],
+[6,3,"s","Irrigation, cold chain and processing need power."],
+[6,4,"h","Farm-to-market roads and post-harvest logistics decide losses."],
+[6,5,"s","Processors are the buyers and offtakers."],
+[6,8,"s","Extension and farmer training lift yields."],
+[6,9,"s","Seed, yield and post-harvest research."],
+[7,1,"s","Maintenance bundled into purchases needs honest procurement."],
+[7,3,"s","Yards are heavy power users."],
+[7,4,"s","Port access and heavy-lift logistics."],
+[7,5,"h","Needs an industrial base: steel, blocks and outfitting suppliers."],
+[7,8,"h","Needs welders, fitters and electricians."],
+[8,2,"s","Funds schools, technical training and certification."],
+[8,5,"h","Anchor employers host apprenticeships; skills follow demand."],
+[8,7,"s","Yards create demand for technical skills."],
+[8,10,"s","Healthier, better-fed households invest more in schooling."],
+[9,2,"h","Research funding and long-term capital."],
+[9,5,"h","Firms are the customers that turn research into products."],
+[9,8,"h","Researchers and technicians come from the learning pipeline."],
+[10,2,"h","Fiscal room pays for social protection."],
+[10,5,"h","Jobs, productivity and profits create the pool to share."],
+[10,6,"h","Farmgate prices and yields drive rural incomes."],
+[10,7,"s","Yard jobs and wages."],
+[10,8,"h","Skills raise earning capacity."],
+[10,9,"s","Productivity spillovers reach wages over time."],
+[10,11,"s","Resilience protects household assets and incomes from shocks."],
+[11,1,"s","Reserve purchases must be real, not paper."],
+[11,2,"h","Reserves and buffers need multi-year funding."],
+[11,3,"h","Energy security: fuel buffers and grid redundancy."],
+[11,4,"h","Disaster logistics and access."],
+[11,5,"s","Domestic production of critical inputs, over the long run."],
+[11,6,"h","Domestic food supply and buffer stocks."],
+[11,7,"s","Domestic repair capacity."]
+];
+var M={},sel=null,hard=false,cpOn=false;
+E.forEach(function(e){M[e[0]+"_"+e[1]]=e;});
+function vis(e){return !hard||e[2]==="h";}
+function tg(e){return e[2]==="h"?"hard":"soft";}
+function hlR(r){return !!sel&&(sel.e?r===sel.r:r===sel.i);}
+function hlC(c){return !!sel&&(sel.e?c===sel.c:c===sel.i);}
+function mem(r,c){if(!sel)return true;if(sel.e)return r===sel.r&&c===sel.c;return r===sel.i||c===sel.i;}
+function tint(i){return Ly[i]===2?" t2":Ly[i]===3?" t3":"";}
+function li(nm,e){return "<div style='margin:0 0 8px'><span style='font-weight:500'>"+nm+"</span> <span style='color:var(--mu)'>("+tg(e)+(e[1]>e[0]?", feedback":"")+")</span><div style='color:var(--t2)'>"+e[3]+"</div></div>";}
+function panel(){
+  var p=document.getElementById("p"),d="",s="",nd=0,ns=0,e;
+  if(!sel){p.innerHTML="<span style='color:var(--t2)'>Select a component or a mark to see how each dependency works.</span>";return;}
+  if(sel.e){
+    e=M[sel.r+"_"+sel.c];
+    p.innerHTML="<div style='font-weight:500'>"+F[sel.r]+" depends on "+F[sel.c]+"</div><div style='color:var(--t2);margin-top:4px'>"+(e[2]==="h"?"Hard":"Soft")+(sel.c>sel.r?", feedback":"")+". "+e[3]+"</div>";
+    return;
+  }
+  E.forEach(function(x){
+    if(!vis(x))return;
+    if(x[0]===sel.i){nd++;d+=li(F[x[1]],x);}
+    if(x[1]===sel.i){ns++;s+=li(F[x[0]],x);}
+  });
+  p.innerHTML="<div style='font-weight:500;margin-bottom:8px'>"+F[sel.i]+"</div><div style='display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px'><div><div style='color:var(--t2);margin-bottom:6px'>Depends on ("+nd+")</div>"+(d||"<span style='color:var(--mu)'>Nothing</span>")+"</div><div><div style='color:var(--t2);margin-bottom:6px'>Supports ("+ns+")</div>"+(s||"<span style='color:var(--mu)'>Nothing</span>")+"</div></div>";
+}
+function render(){
+  var h="<table class='dsm'><colgroup><col style='width:196px'>",r,c,e,n,k,cl,t;
+  for(c=0;c<12;c++)h+="<col style='width:34px'>";
+  h+="<col style='width:46px'></colgroup><thead><tr><th></th>";
+  for(c=0;c<12;c++)h+="<th class='ch"+tint(c)+(hlC(c)?" hl":"")+"' data-c='"+c+"' title='"+F[c]+"'>"+(c+1)+"</th>";
+  h+="<th class='ch' title='How many components this one depends on'>Needs</th></tr></thead><tbody>";
+  for(r=0;r<12;r++){
+    h+="<tr><th scope='row' class='rl"+tint(r)+(hlR(r)?" hl":"")+"' data-r='"+r+"' title='"+F[r]+"'><span style='color:var(--mu)'>"+(r+1)+"</span>&nbsp; "+N[r]+"</th>";
+    n=0;
+    for(c=0;c<12;c++){
+      e=M[r+"_"+c];cl="c"+(c>r?" up":"")+(c===r?" dg":"");k="";t="";
+      if(e&&vis(e)){n++;cl+=" mk";k="<span class='dot "+e[2]+(c>r?" fb":"")+(mem(r,c)?"":" off")+"'></span>";t=" title='"+F[r]+" depends on "+F[c]+" ("+tg(e)+"): "+e[3]+"'";}
+      if(hlR(r)||hlC(c))cl+=" hl";
+      if(cpOn&&CP[r+"_"+c])cl+=" cp";
+      h+="<td class='"+cl+"' data-r='"+r+"' data-c='"+c+"'"+t+">"+k+"</td>";
+    }
+    h+="<td class='n'>"+n+"</td></tr>";
+  }
+  h+="<tr><th class='rl' style='cursor:default'>Supports</th>";
+  for(c=0;c<12;c++){
+    n=0;
+    for(r=0;r<12;r++){e=M[r+"_"+c];if(e&&vis(e))n++;}
+    h+="<td class='n'>"+n+"</td>";
+  }
+  h+="<td></td></tr></tbody></table>";
+  document.getElementById("m").innerHTML=h;
+  panel();
+}
+document.getElementById("m").addEventListener("click",function(ev){
+  var t=ev.target.closest("[data-r],[data-c]");
+  if(!t)return;
+  var r=t.getAttribute("data-r"),c=t.getAttribute("data-c"),s=null,e;
+  if(r!==null&&c!==null){
+    r=+r;c=+c;
+    e=M[r+"_"+c];
+    if(!e||!vis(e))return;
+    s={e:1,r:r,c:c};
+  }else{
+    s={i:+(r!==null?r:c)};
+  }
+  if(sel&&JSON.stringify(sel)===JSON.stringify(s))sel=null;else sel=s;
+  render();
+});
+document.getElementById("hd").addEventListener("change",function(){hard=this.checked;render();});
+document.getElementById("cp").addEventListener("change",function(){cpOn=this.checked;render();});
+render();
+</script>
+</body>
+</html>
